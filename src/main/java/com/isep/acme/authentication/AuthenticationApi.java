@@ -1,4 +1,4 @@
-package com.isep.acme.Authentication;
+package com.isep.acme.authentication;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
