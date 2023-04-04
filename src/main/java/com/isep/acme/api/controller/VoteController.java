@@ -11,6 +11,7 @@ import com.isep.acme.domain.model.Vote;
 import com.isep.acme.domain.service.ReviewService;
 import com.isep.acme.dto.mapper.VoteMapper;
 import com.isep.acme.dto.request.VoteRequest;
+import com.isep.acme.messaging.VoteProducer;
 
 import lombok.AllArgsConstructor;
 
@@ -20,12 +21,14 @@ import lombok.AllArgsConstructor;
 public class VoteController {
 
     private final ReviewService reviewService;
+    private final VoteProducer voteProducer;
     private final VoteMapper voteMapper;
     
     @PostMapping
     public ResponseEntity<?> create(@RequestBody VoteRequest voteRequest){
         Vote vote = voteMapper.toEntity(voteRequest);
         reviewService.addVoteToReview(voteRequest.getReviewId(), vote);
+        voteProducer.voteCreated(vote);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.isep.acme.domain.model.Review;
 import com.isep.acme.domain.model.Vote;
 import com.isep.acme.domain.repository.ReviewRepository;
+import com.isep.acme.dto.message.VoteMessage;
 import com.isep.acme.dto.request.VoteRequest;
 
 import lombok.AllArgsConstructor;
@@ -26,6 +27,15 @@ public class VoteMapper {
             optReview.orElse(null),
             voteRequest.getVoteType(),
             voteRequest.getUserId()
+        );
+    }
+
+    public VoteMessage toMessage(Vote vote){
+        return new VoteMessage(
+            vote.getVoteId(),
+            vote.getReview().getReviewId(),
+            vote.getVoteType(),
+            vote.getUserId()
         );
     }
 
