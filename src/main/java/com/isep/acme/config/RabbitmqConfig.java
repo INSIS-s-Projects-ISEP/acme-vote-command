@@ -1,6 +1,9 @@
 package com.isep.acme.config;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -40,14 +43,18 @@ public class RabbitmqConfig {
         return new FanoutExchange("vote.vote-created");
     }
 
-    // @Bean
-    // public Queue productCreatedQueue(String instanceId) {
-    //     return new Queue("product.product-created.review-query." + instanceId, true, true, true);
-    // }
+    @Bean
+    public FanoutExchange reviewCreatedExchange() {
+        return new FanoutExchange("review.review-created");
+    }
 
-    // @Bean
-    // public Binding productCreatedBindingProductCreated(FanoutExchange productCreatedExchange,
-    //         Queue productCreatedQueue) {
-    //     return BindingBuilder.bind(productCreatedQueue).to(productCreatedExchange);
-    // }
+    @Bean
+    public Queue reviewCreatedQueue(String instanceId) {
+        return new Queue("review.review-created.vote-command." + instanceId, true, true, true);
+    }
+
+    @Bean
+    public Binding bindingReviewCreatedToReviewCreated(FanoutExchange reviewCreatedExchange, Queue reviewCreatedQueue) {
+        return BindingBuilder.bind(reviewCreatedQueue).to(reviewCreatedExchange);
+    }
 }
