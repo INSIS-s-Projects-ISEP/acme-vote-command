@@ -50,11 +50,21 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue reviewCreatedQueue(String instanceId) {
-        return new Queue("review.review-created.vote-command." + instanceId, true, true, true);
+        return new Queue("review.review-created.vote-query." + instanceId, true, true, true);
     }
 
     @Bean
     public Binding bindingReviewCreatedToReviewCreated(FanoutExchange reviewCreatedExchange, Queue reviewCreatedQueue) {
         return BindingBuilder.bind(reviewCreatedQueue).to(reviewCreatedExchange);
+    }
+
+    @Bean
+    public Queue voteCreatedQueue(String instanceId){
+        return new Queue("vote.vote-created.vote-query." + instanceId, true, true, true);
+    }
+
+    @Bean
+    public Binding bindingVoteCreatedToVoteCreated(FanoutExchange voteCreatedExchange, Queue voteCreatedQueue) {
+        return BindingBuilder.bind(voteCreatedQueue).to(voteCreatedExchange);
     }
 }
