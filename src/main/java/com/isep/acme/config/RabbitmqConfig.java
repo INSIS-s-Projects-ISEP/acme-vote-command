@@ -3,6 +3,9 @@ package com.isep.acme.config;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -22,8 +25,11 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, Jackson2JsonMessageConverter jackson2JsonMessageConverter) {
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
+             Jackson2JsonMessageConverter jackson2JsonMessageConverter,
+             MessagePostProcessor beforePublishPostProcessor) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.addBeforePublishPostProcessors(beforePublishPostProcessor);
         rabbitTemplate.setMessageConverter(jackson2JsonMessageConverter);
         return rabbitTemplate;
     }
@@ -66,5 +72,17 @@ public class RabbitmqConfig {
     @Bean
     public Binding bindingVoteCreatedToVoteCreated(FanoutExchange voteCreatedExchange, Queue voteCreatedQueue) {
         return BindingBuilder.bind(voteCreatedQueue).to(voteCreatedExchange);
+    }
+
+    @Bean
+    public MessagePostProcessor beforePublishPostProcessor(String instanceId){
+        return new MessagePostProcessor() {
+            @Override
+            public Message postProcessMessage(Message message){
+                MessageProperties messageProperties = message.getMessageProperties();
+                messageProperties.setAppId(instanceId);
+                return message;
+            }
+        };
     }
 }
