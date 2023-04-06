@@ -51,7 +51,7 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue voteCreatedQueue(String instanceId){
-        return new Queue("vote.vote-created.vote-query." + instanceId, true, true, true);
+        return new Queue("vote.vote-created.vote-command." + instanceId, true, true, true);
     }
 
     @Bean
@@ -93,7 +93,7 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue reviewCreatedQueue(String instanceId) {
-        return new Queue("review.review-created.vote-query." + instanceId, true, true, true);
+        return new Queue("review.review-created.vote-command." + instanceId, true, true, true);
     }
 
     @Bean
