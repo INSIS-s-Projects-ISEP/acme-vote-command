@@ -21,7 +21,6 @@ import lombok.Setter;
 public class TemporaryVote {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID temporaryVoteId;
     private String user;
     private VoteType voteType;

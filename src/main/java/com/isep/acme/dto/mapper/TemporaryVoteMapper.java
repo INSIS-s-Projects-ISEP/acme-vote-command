@@ -12,8 +12,16 @@ public class TemporaryVoteMapper {
     
     public TemporaryVote toEntity(TemporaryVoteRequest temporaryVoteRequest){
         return new TemporaryVote(null,
-            temporaryVoteRequest.getUser(),
-            temporaryVoteRequest.getVoteType()
+        temporaryVoteRequest.getUser(),
+        temporaryVoteRequest.getVoteType()
+        );
+    }
+
+    public TemporaryVote toEntity(TemporaryVoteMessage temporaryVoteMessage){
+        return new TemporaryVote(
+            temporaryVoteMessage.getTemporaryVoteId(),
+            temporaryVoteMessage.getUser(),
+            temporaryVoteMessage.getVoteType()
         );
     }
 
