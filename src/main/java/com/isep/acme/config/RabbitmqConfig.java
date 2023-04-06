@@ -71,15 +71,15 @@ public class RabbitmqConfig {
         return BindingBuilder.bind(voteCreatedQueue).to(voteCreatedExchange);
     }
 
-    
+
     @Bean
     public FanoutExchange voteUpdatedExchange() {
         return new FanoutExchange("vote.vote-updated");
     }
-    
+
     @Bean
-    public Queue voteUpdatedQueue(String intanceId) {
-        return new Queue("vote.vote-updated.vote-command." + intanceId, true, true, true);
+    public Queue voteUpdatedQueue(String instanceId) {
+        return new Queue("vote.vote-updated.vote-command." + instanceId, true, true, true);
     }
 
     @Bean
@@ -87,15 +87,15 @@ public class RabbitmqConfig {
             Queue voteUpdatedQueue) {
         return BindingBuilder.bind(voteUpdatedQueue).to(voteUpdatedExchange);
     }
-    
+
     @Bean
     public FanoutExchange voteDeletedExchange() {
         return new FanoutExchange("vote.vote-deleted");
     }
-    
+
     @Bean
-    public Queue voteDeletedQueue(String intanceId) {
-        return new Queue("vote.vote-deleted.vote-command." + intanceId, true, true, true);
+    public Queue voteDeletedQueue(String instanceId) {
+        return new Queue("vote.vote-deleted.vote-command." + instanceId, true, true, true);
     }
 
     @Bean
@@ -117,10 +117,10 @@ public class RabbitmqConfig {
     public FanoutExchange reviewUpdatedExchange() {
         return new FanoutExchange("review.review-updated");
     }
-    
+
     @Bean
-    public Queue reviewUpdatedQueue(String intanceId) {
-        return new Queue("review.review-updated.vote-command." + intanceId, true, true, true);
+    public Queue reviewUpdatedQueue(String instanceId) {
+        return new Queue("review.review-updated.vote-command." + instanceId, true, true, true);
     }
 
     @Bean
@@ -133,10 +133,10 @@ public class RabbitmqConfig {
     public FanoutExchange reviewDeletedExchange() {
         return new FanoutExchange("review.review-deleted");
     }
-    
+
     @Bean
-    public Queue reviewDeletedQueue(String intanceId) {
-        return new Queue("review.review-deleted.vote-command." + intanceId, true, true, true);
+    public Queue reviewDeletedQueue(String instanceId) {
+        return new Queue("review.review-deleted.vote-command." + instanceId, true, true, true);
     }
 
     @Bean
@@ -154,8 +154,8 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public Queue temporaryVoteCreatedQueue(String intanceId) {
-        return new Queue("temporary-vote.temporary-vote-created.vote-command." + intanceId, true, true, true);
+    public Queue temporaryVoteCreatedQueue(String instanceId) {
+        return new Queue("temporary-vote.temporary-vote-created.vote-command." + instanceId, true, true, true);
     }
 
     @Bean
@@ -171,7 +171,7 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public Queue reviewCreatedForTemporaryVoteQueue(String intanceId) {
+    public Queue reviewCreatedForTemporaryVoteQueue() {
         return new Queue("review.review-created-for-temporary-vote.vote-command", true, false, true);
     }
 
@@ -180,5 +180,22 @@ public class RabbitmqConfig {
             Queue reviewCreatedForTemporaryVoteQueue) {
         return BindingBuilder.bind(reviewCreatedForTemporaryVoteQueue).to(reviewCreatedForTemporaryVoteExchange);
     }
-    
+
+    // Exchange and a queue to receive a definite vote
+    @Bean
+    public FanoutExchange definitiveVoteCreatedExchange() {
+        return new FanoutExchange("vote.definitive-vote-created");
+    }
+
+    @Bean
+    public Queue definitiveVoteCreatedQueue(String instanceId) {
+        return new Queue("vote.definitive-vote-created.vote-command." + instanceId, true, true, true);
+    }
+
+    @Bean
+    public Binding bindingDefinitiveVoteCreatedToDefinitiveVoteCreated(FanoutExchange definitiveVoteCreatedExchange,
+            Queue definitiveVoteCreatedQueue) {
+        return BindingBuilder.bind(definitiveVoteCreatedQueue).to(definitiveVoteCreatedExchange);
+    }
+
 }
