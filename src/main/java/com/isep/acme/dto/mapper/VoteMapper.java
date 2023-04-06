@@ -19,14 +19,25 @@ public class VoteMapper {
     private final ReviewRepository reviewRepository;
 
     public Vote toEntity(VoteRequest voteRequest){
-
         Long reviewId = voteRequest.getReviewId();
         Optional<Review> optReview = reviewRepository.findById(reviewId);
         
         return new Vote(null,
             optReview.orElse(null),
             voteRequest.getVoteType(),
-            voteRequest.getUserId()
+            voteRequest.getUser()
+        );
+    }
+
+    public Vote toEntity(VoteMessage voteMessage){
+        Long reviewId = voteMessage.getReviewId();
+        Optional<Review> optReview = reviewRepository.findById(reviewId);
+
+        return new Vote(
+            voteMessage.getVoteId(),
+            optReview.orElseThrow(),
+            voteMessage.getVoteType(),
+            voteMessage.getUser()
         );
     }
 
@@ -35,7 +46,7 @@ public class VoteMapper {
             vote.getVoteId(),
             vote.getReview().getReviewId(),
             vote.getVoteType(),
-            vote.getUserId()
+            vote.getUser()
         );
     }
 

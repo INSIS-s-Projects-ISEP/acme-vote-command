@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.isep.acme.domain.model.Review;
+import com.isep.acme.domain.model.enumerate.ApprovalStatus;
 import com.isep.acme.domain.service.ReviewService;
 
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ public class ReviewBootstrapper implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         Review review = new Review();
-        review.setApprovalStatus("approved");
+        review.setApprovalStatus(ApprovalStatus.APPROVED);
         reviewService.save(review);
 
         log.info("Review created: " + review.getReviewId());

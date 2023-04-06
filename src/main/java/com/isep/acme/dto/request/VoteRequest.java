@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter @Setter
 public class VoteRequest {
 
-    private Long userId;
-    private VoteType voteType;
+    private String user;
     private Long reviewId;
+    private VoteType voteType;
     
 }

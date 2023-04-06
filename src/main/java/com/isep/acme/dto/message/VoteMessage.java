@@ -12,5 +12,5 @@ public class VoteMessage {
     private Long voteId;
     private Long reviewId;
     private VoteType voteType;
-    private Long userId;
+    private String user;
 }

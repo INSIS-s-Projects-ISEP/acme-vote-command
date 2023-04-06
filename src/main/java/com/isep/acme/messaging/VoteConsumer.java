@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import com.isep.acme.domain.model.Vote;
 import com.isep.acme.domain.service.VoteService;
+import com.isep.acme.dto.mapper.VoteMapper;
+import com.isep.acme.dto.message.VoteMessage;
 import com.rabbitmq.client.Channel;
 
 import lombok.AllArgsConstructor;
@@ -25,6 +27,7 @@ public class VoteConsumer {
     private final String instanceId;
     private final VoteService voteService;
     private final MessageConverter messageConverter;
+    private final VoteMapper voteMapper;
 
     @RabbitListener(queues = "#{voteCreatedQueue.name}", ackMode = "MANUAL")
     public void voteCreated(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
@@ -36,11 +39,12 @@ public class VoteConsumer {
             return;
         }
         
-        Vote vote = (Vote) messageConverter.fromMessage(message);
-        log.info("Vote received: " + vote);
+        VoteMessage voteMessage = (VoteMessage) messageConverter.fromMessage(message);
+        Vote vote = voteMapper.toEntity(voteMessage);
+        log.info("Vote received: " + vote.getVoteId());
         voteService.save(vote);
         channel.basicAck(tag, false);
-        log.info("Vote created: " + vote);
+        log.info("Vote created: " + vote.getVoteId());
     }
 
     public void voteUpdated(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
@@ -52,11 +56,12 @@ public class VoteConsumer {
             return;
         }
         
-        Vote vote = (Vote) messageConverter.fromMessage(message);
-        log.info("Vote received: " + vote);
+        VoteMessage voteMessage = (VoteMessage) messageConverter.fromMessage(message);
+        Vote vote = voteMapper.toEntity(voteMessage);
+        log.info("Vote received: " + vote.getVoteId());
         voteService.updateVoteType(vote, vote.getVoteType());
         channel.basicAck(tag, false);
-        log.info("Vote updated: " + vote);
+        log.info("Vote updated: " + vote.getVoteId());
     }
 
     public void voteDeleted(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
@@ -68,7 +73,8 @@ public class VoteConsumer {
             return;
         }
         
-        Vote vote = (Vote) messageConverter.fromMessage(message);
+        VoteMessage voteMessage = (VoteMessage) messageConverter.fromMessage(message);
+        Vote vote = voteMapper.toEntity(voteMessage);
         log.info("Vote received: " + vote.getVoteId());
         voteService.deleteById(vote.getVoteId());
         channel.basicAck(tag, false);
