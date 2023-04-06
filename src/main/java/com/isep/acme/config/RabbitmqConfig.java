@@ -35,6 +35,18 @@ public class RabbitmqConfig {
     }
 
     @Bean
+    public MessagePostProcessor beforePublishPostProcessor(String instanceId){
+        return new MessagePostProcessor() {
+            @Override
+            public Message postProcessMessage(Message message){
+                MessageProperties messageProperties = message.getMessageProperties();
+                messageProperties.setAppId(instanceId);
+                return message;
+            }
+        };
+    }
+
+    @Bean
     public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
         return new RabbitAdmin(connectionFactory);
     }
@@ -133,15 +145,25 @@ public class RabbitmqConfig {
         return BindingBuilder.bind(reviewDeletedQueue).to(reviewDeletedExchange);
     }
 
+    // SAGA
+
+    // Fanout Exchange and Queues to receive and send created temporary votes
     @Bean
-    public MessagePostProcessor beforePublishPostProcessor(String instanceId){
-        return new MessagePostProcessor() {
-            @Override
-            public Message postProcessMessage(Message message){
-                MessageProperties messageProperties = message.getMessageProperties();
-                messageProperties.setAppId(instanceId);
-                return message;
-            }
-        };
+    public FanoutExchange temporaryVoteCreatedExchange() {
+        return new FanoutExchange("temporary-vote.temporary-vote-created");
     }
+
+    @Bean
+    public Queue temporaryVoteCreatedQueue(String intanceId) {
+        return new Queue("temporary-vote.temporary-vote-created.vote-command." + intanceId, true, true, true);
+    }
+
+    @Bean
+    public Binding bindingTemporaryVoteCreatedToTemporaryVoteCreated(FanoutExchange temporaryVoteCreatedExchange,
+            Queue temporaryVoteCreatedQueue) {
+        return BindingBuilder.bind(temporaryVoteCreatedQueue).to(temporaryVoteCreatedExchange);
+    }
+
+    // 
+    
 }
