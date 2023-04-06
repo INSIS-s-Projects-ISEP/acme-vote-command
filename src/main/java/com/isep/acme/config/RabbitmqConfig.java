@@ -108,7 +108,7 @@ public class RabbitmqConfig {
     
     @Bean
     public Queue reviewUpdatedQueue(String intanceId) {
-        return new Queue("review.review-updated.review-command." + intanceId, true, true, true);
+        return new Queue("review.review-updated.vote-command." + intanceId, true, true, true);
     }
 
     @Bean
@@ -124,9 +124,14 @@ public class RabbitmqConfig {
     
     @Bean
     public Queue reviewDeletedQueue(String intanceId) {
-        return new Queue("review.review-deleted.review-command." + intanceId, true, true, true);
+        return new Queue("review.review-deleted.vote-command." + intanceId, true, true, true);
     }
 
+    @Bean
+    public Binding bindingReviewDeletedtoReviewDeleted(FanoutExchange reviewDeletedExchange,
+            Queue reviewDeletedQueue) {
+        return BindingBuilder.bind(reviewDeletedQueue).to(reviewDeletedExchange);
+    }
 
     @Bean
     public MessagePostProcessor beforePublishPostProcessor(String instanceId){

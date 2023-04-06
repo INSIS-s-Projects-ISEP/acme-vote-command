@@ -42,7 +42,7 @@ public class ReviewConsumer {
         Review review = reviewMapper.toEntity(reviewMessage);
         log.info("Review received: " + review.getReviewId());
 
-        reviewService.save(review);
+        reviewService.moderateReview(review.getReviewId(), review.getApprovalStatus());
         channel.basicAck(tag, false);
 
         log.info("Review updated: " + review.getReviewId());

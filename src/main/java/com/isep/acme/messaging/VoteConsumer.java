@@ -47,6 +47,7 @@ public class VoteConsumer {
         log.info("Vote created: " + vote.getVoteId());
     }
 
+    @RabbitListener(queues = "#{voteUpdatedQueue.name}", ackMode = "MANUAL")
     public void voteUpdated(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
 
         MessageProperties messageProperties = message.getMessageProperties();
@@ -64,6 +65,7 @@ public class VoteConsumer {
         log.info("Vote updated: " + vote.getVoteId());
     }
 
+    @RabbitListener(queues = "#{voteDeletedQueue.name}", ackMode = "MANUAL")
     public void voteDeleted(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
 
         MessageProperties messageProperties = message.getMessageProperties();

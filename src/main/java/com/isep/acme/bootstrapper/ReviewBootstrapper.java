@@ -21,6 +21,7 @@ public class ReviewBootstrapper implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         Review review = new Review();
+        review.setReviewId(25L);
         review.setApprovalStatus(ApprovalStatus.APPROVED);
         reviewService.save(review);
 
