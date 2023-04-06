@@ -1,6 +1,7 @@
 package com.isep.acme.messaging;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
@@ -46,5 +47,21 @@ public class TemporaryVoteConsumer {
         temporaryVoteService.save(temporaryVote);
         log.info("Temporary Vote created: " + temporaryVote.getTemporaryVoteId());
         
+    }
+
+    @RabbitListener(queues = "#{definitiveVoteCreatedQueue.name}", ackMode = "MANUAL")
+    public void definitiveVoteCreated(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
+
+        MessageProperties messageProperties = message.getMessageProperties();
+        if(messageProperties.getAppId().equals(instanceId)){
+            channel.basicAck(tag, false);
+            log.info("Received own message and ignore it.");
+            return;
+        }
+
+        UUID temporaryVoteId = (UUID) messageConverter.fromMessage(message);
+        temporaryVoteService.deleteById(temporaryVoteId);
+        log.info("Temporary Vote deleted: " + temporaryVoteId);
+
     }
 }
