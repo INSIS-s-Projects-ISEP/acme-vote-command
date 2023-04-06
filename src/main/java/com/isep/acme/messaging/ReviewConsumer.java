@@ -22,4 +22,20 @@ public class ReviewConsumer {
         reviewService.create(review);
         log.info("Review created: " + review);
     }
+
+    @RabbitListener(queues = "#{reviewUpdatedQueue.name}")
+    public void reviewUpdated(Review review){
+        log.info("Review received: " + review.getReviewId());
+        reviewService.moderateReview(review.getReviewId(), review.getApprovalStatus());
+        log.info("Review updated: " + review.getReviewId());
+    }
+
+    @RabbitListener(queues = "#{reviewDeletedQueue.name}")
+    public void reviewDeleted(Long reviewId){
+        log.info("Review received: " + reviewId);
+        reviewService.deleteReview(reviewId);
+        log.info("Review deleted: " + reviewId);
+    }
+
+
 }

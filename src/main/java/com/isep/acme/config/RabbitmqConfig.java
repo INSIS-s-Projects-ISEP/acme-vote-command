@@ -50,6 +50,43 @@ public class RabbitmqConfig {
     }
 
     @Bean
+    public Queue voteCreatedQueue(String instanceId){
+        return new Queue("vote.vote-created.vote-query." + instanceId, true, true, true);
+    }
+
+    @Bean
+    public Binding bindingVoteCreatedToVoteCreated(FanoutExchange voteCreatedExchange, Queue voteCreatedQueue) {
+        return BindingBuilder.bind(voteCreatedQueue).to(voteCreatedExchange);
+    }
+
+    
+    @Bean
+    public FanoutExchange voteUpdatedExchange() {
+        return new FanoutExchange("vote.vote-updated");
+    }
+    
+    @Bean
+    public Queue voteUpdatedQueue(String intanceId) {
+        return new Queue("vote.vote-updated.vote-command." + intanceId, true, true, true);
+    }
+
+    @Bean
+    public Binding bindingvoteUpdatedtovoteUpdated(FanoutExchange voteUpdatedExchange,
+            Queue voteUpdatedQueue) {
+        return BindingBuilder.bind(voteUpdatedQueue).to(voteUpdatedExchange);
+    }
+    
+    @Bean
+    public FanoutExchange voteDeletedExchange() {
+        return new FanoutExchange("vote.vote-deleted");
+    }
+    
+    @Bean
+    public Queue voteDeletedQueue(String intanceId) {
+        return new Queue("vote.vote-deleted.vote-command." + intanceId, true, true, true);
+    }
+
+    @Bean
     public FanoutExchange reviewCreatedExchange() {
         return new FanoutExchange("review.review-created");
     }
@@ -65,14 +102,31 @@ public class RabbitmqConfig {
     }
 
     @Bean
-    public Queue voteCreatedQueue(String instanceId){
-        return new Queue("vote.vote-created.vote-query." + instanceId, true, true, true);
+    public FanoutExchange reviewUpdatedExchange() {
+        return new FanoutExchange("review.review-updated");
+    }
+    
+    @Bean
+    public Queue reviewUpdatedQueue(String intanceId) {
+        return new Queue("review.review-updated.review-command." + intanceId, true, true, true);
     }
 
     @Bean
-    public Binding bindingVoteCreatedToVoteCreated(FanoutExchange voteCreatedExchange, Queue voteCreatedQueue) {
-        return BindingBuilder.bind(voteCreatedQueue).to(voteCreatedExchange);
+    public Binding bindingReviewUpdatedtoReviewUpdated(FanoutExchange reviewUpdatedExchange,
+            Queue reviewUpdatedQueue) {
+        return BindingBuilder.bind(reviewUpdatedQueue).to(reviewUpdatedExchange);
     }
+
+    @Bean
+    public FanoutExchange reviewDeletedExchange() {
+        return new FanoutExchange("review.review-deleted");
+    }
+    
+    @Bean
+    public Queue reviewDeletedQueue(String intanceId) {
+        return new Queue("review.review-deleted.review-command." + intanceId, true, true, true);
+    }
+
 
     @Bean
     public MessagePostProcessor beforePublishPostProcessor(String instanceId){

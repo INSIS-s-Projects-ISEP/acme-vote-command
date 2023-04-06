@@ -42,4 +42,36 @@ public class VoteConsumer {
         channel.basicAck(tag, false);
         log.info("Vote created: " + vote);
     }
+
+    public void voteUpdated(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
+
+        MessageProperties messageProperties = message.getMessageProperties();
+        if(messageProperties.getAppId().equals(instanceId)){
+            channel.basicAck(tag, false);
+            log.info("Received own message.");
+            return;
+        }
+        
+        Vote vote = (Vote) messageConverter.fromMessage(message);
+        log.info("Vote received: " + vote);
+        voteService.updateVoteType(vote, vote.getVoteType());
+        channel.basicAck(tag, false);
+        log.info("Vote updated: " + vote);
+    }
+
+    public void voteDeleted(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
+
+        MessageProperties messageProperties = message.getMessageProperties();
+        if(messageProperties.getAppId().equals(instanceId)){
+            channel.basicAck(tag, false);
+            log.info("Received own message.");
+            return;
+        }
+        
+        Vote vote = (Vote) messageConverter.fromMessage(message);
+        log.info("Vote received: " + vote.getVoteId());
+        voteService.deleteById(vote.getVoteId());
+        channel.basicAck(tag, false);
+        log.info("Vote deleted: " + vote.getVoteId());
+    }
 }

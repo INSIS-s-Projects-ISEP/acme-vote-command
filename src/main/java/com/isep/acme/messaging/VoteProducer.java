@@ -20,4 +20,13 @@ public class VoteProducer {
         rabbitmqService.sendMessage("vote.vote-created", "", voteMessage);
     }
 
+    public void voteUpdated(Vote vote){
+        VoteMessage voteMessage = voteMapper.toMessage(vote);
+        rabbitmqService.sendMessage("vote.vote-updated", "", voteMessage);
+    }
+
+    public void voteDeleted(Long voteId){
+        rabbitmqService.sendMessage("vote.vote-deleted", "", voteId);
+    }
+
 }
