@@ -1,10 +1,11 @@
-package com.isep.acme.domain.service;
+package com.isep.acme.domain.service.impl;
 
 import org.springframework.stereotype.Service;
 
 import com.isep.acme.domain.model.Vote;
 import com.isep.acme.domain.model.enumerate.VoteType;
 import com.isep.acme.domain.repository.VoteRepository;
+import com.isep.acme.domain.service.VoteService;
 
 import lombok.AllArgsConstructor;
 

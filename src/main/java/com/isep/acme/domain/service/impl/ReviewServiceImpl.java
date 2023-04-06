@@ -1,4 +1,4 @@
-package com.isep.acme.domain.service;
+package com.isep.acme.domain.service.impl;
 
 import java.util.Optional;
 
@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.isep.acme.domain.model.Review;
 import com.isep.acme.domain.model.Vote;
 import com.isep.acme.domain.repository.ReviewRepository;
+import com.isep.acme.domain.service.ReviewService;
+import com.isep.acme.domain.service.VoteService;
 import com.isep.acme.exception.ResourceNotFoundException;
 
 import lombok.AllArgsConstructor;
