@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.isep.acme.domain.model.TemporaryVote;
 import com.isep.acme.domain.model.Vote;
-import com.isep.acme.domain.repository.TemporaryVoteRepository;
 import com.isep.acme.domain.service.ReviewService;
 import com.isep.acme.domain.service.TemporaryVoteService;
 import com.isep.acme.dto.mapper.TemporaryVoteMapper;

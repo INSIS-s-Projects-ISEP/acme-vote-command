@@ -164,6 +164,21 @@ public class RabbitmqConfig {
         return BindingBuilder.bind(temporaryVoteCreatedQueue).to(temporaryVoteCreatedExchange);
     }
 
-    // 
+    // Direct exchange and a queue to receive review created for a temporary vote
+    @Bean
+    public FanoutExchange reviewCreatedForTemporaryVoteExchange() {
+        return new FanoutExchange("review.review-created-for-temporary-vote");
+    }
+
+    @Bean
+    public Queue reviewCreatedForTemporaryVoteQueue(String intanceId) {
+        return new Queue("review.review-created-for-temporary-vote.vote-command", true, false, true);
+    }
+
+    @Bean
+    public Binding bindingReviewCreatedForTemporaryVoteToReviewCreatedForTemporaryVote(FanoutExchange reviewCreatedForTemporaryVoteExchange,
+            Queue reviewCreatedForTemporaryVoteQueue) {
+        return BindingBuilder.bind(reviewCreatedForTemporaryVoteQueue).to(reviewCreatedForTemporaryVoteExchange);
+    }
     
 }
