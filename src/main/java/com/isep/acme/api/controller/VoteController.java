@@ -14,9 +14,11 @@ import com.isep.acme.dto.request.VoteRequest;
 import com.isep.acme.messaging.VoteProducer;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 
 @RestController
 @AllArgsConstructor
+@Log
 @RequestMapping("votes")
 public class VoteController {
 
@@ -29,6 +31,7 @@ public class VoteController {
         Vote vote = voteMapper.toEntity(voteRequest);
         reviewService.addVoteToReview(voteRequest.getReviewId(), vote);
         voteProducer.voteCreated(vote);
+        log.info("Vote created: " + vote.getVoteId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
