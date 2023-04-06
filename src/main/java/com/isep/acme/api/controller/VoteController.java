@@ -9,12 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.isep.acme.domain.model.TemporaryVote;
 import com.isep.acme.domain.model.Vote;
+import com.isep.acme.domain.repository.TemporaryVoteRepository;
 import com.isep.acme.domain.service.ReviewService;
 import com.isep.acme.domain.service.TemporaryVoteService;
 import com.isep.acme.dto.mapper.TemporaryVoteMapper;
 import com.isep.acme.dto.mapper.VoteMapper;
+import com.isep.acme.dto.request.ReviewRequest;
 import com.isep.acme.dto.request.TemporaryVoteRequest;
 import com.isep.acme.dto.request.VoteRequest;
+import com.isep.acme.messaging.TemporaryVoteProducer;
 import com.isep.acme.messaging.VoteProducer;
 
 import lombok.AllArgsConstructor;
@@ -27,11 +30,13 @@ import lombok.extern.java.Log;
 public class VoteController {
 
     private final ReviewService reviewService;
-    private final VoteProducer voteProducer;
     private final TemporaryVoteService temporaryVoteService;
-
+    
     private final TemporaryVoteMapper temporaryVoteMapper;
     private final VoteMapper voteMapper;
+
+    private final VoteProducer voteProducer;
+    private final TemporaryVoteProducer temporaryVoteProducer;
     
     @PostMapping
     public ResponseEntity<?> create(@RequestBody VoteRequest voteRequest){
@@ -47,9 +52,12 @@ public class VoteController {
         @RequestBody TemporaryVoteRequest temporaryVoteRequest){
 
         TemporaryVote temporaryVote = temporaryVoteMapper.toEntity(temporaryVoteRequest);
+        ReviewRequest reviewRequest = temporaryVoteRequest.getReview();
+
         temporaryVoteService.save(temporaryVote);
+        temporaryVoteProducer.temporaryVoteCreated(temporaryVote, reviewRequest);
 
         return ResponseEntity.accepted().build();
     }
-    
+
 }
