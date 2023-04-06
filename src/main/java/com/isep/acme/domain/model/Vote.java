@@ -35,6 +35,6 @@ public class Vote {
     @Enumerated(EnumType.STRING)
     private VoteType voteType;
 
-    private Long userId;
+    private String user;
 
 }

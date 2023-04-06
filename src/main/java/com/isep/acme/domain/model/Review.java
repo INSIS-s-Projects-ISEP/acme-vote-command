@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.isep.acme.domain.model.enumerate.ApprovalStatus;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,29 +24,15 @@ public class Review {
     private Long reviewId;
 
     @Column(nullable = false)
-    private String approvalStatus = "pending";
+    private ApprovalStatus approvalStatus = ApprovalStatus.PENDING;
 
     @OneToMany(mappedBy = "review")
     private Set<Vote> votes = new HashSet<>();
 
-    public Boolean setApprovalStatus(String approvalStatus) {
-
-        if( approvalStatus.equalsIgnoreCase("pending") ||
-            approvalStatus.equalsIgnoreCase("approved") ||
-            approvalStatus.equalsIgnoreCase("rejected")) {
-            
-            this.approvalStatus = approvalStatus;
-            return true;
-        }
-        return false;
-    }
-
-    public void addVote(Vote upVote) {
-
-        if(!approvalStatus.equals("approved")){
+    public void addVote(Vote vote){
+        if(!approvalStatus.equals(ApprovalStatus.APPROVED)){
             throw new RuntimeException("Review is not approved");
         }
-
-        votes.add(upVote);
+        votes.add(vote);
     }
 }
