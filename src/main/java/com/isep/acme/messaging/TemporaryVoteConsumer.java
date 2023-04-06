@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.messaging.handler.annotation.Header;
@@ -28,6 +29,7 @@ public class TemporaryVoteConsumer {
     private final TemporaryVoteMapper temporaryVoteMapper;
     private final TemporaryVoteService temporaryVoteService;
     
+    @RabbitListener(queues = "#{temporaryVoteCreatedQueue.name}", ackMode = "MANUAL")
     public void temporaryVoteCreated(Message message, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
 
         MessageProperties messageProperties = message.getMessageProperties();

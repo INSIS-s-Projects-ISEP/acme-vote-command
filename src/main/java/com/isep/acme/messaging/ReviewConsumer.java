@@ -1,6 +1,7 @@
 package com.isep.acme.messaging;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.support.AmqpHeaders;
@@ -9,7 +10,9 @@ import org.springframework.stereotype.Component;
 
 import com.isep.acme.domain.model.Review;
 import com.isep.acme.domain.service.ReviewService;
+import com.isep.acme.domain.service.TemporaryVoteService;
 import com.isep.acme.dto.mapper.ReviewMapper;
+import com.isep.acme.dto.message.ReviewForTemporaryVoteMessage;
 import com.isep.acme.dto.message.ReviewMessage;
 import com.rabbitmq.client.Channel;
 
@@ -21,7 +24,9 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class ReviewConsumer {
 
+    private final TemporaryVoteService temporaryVoteService;
     private final ReviewService reviewService;
+    
     private final ReviewMapper reviewMapper;
 
     @RabbitListener(queues = "#{reviewCreatedQueue.name}", ackMode = "MANUAL")
@@ -50,7 +55,7 @@ public class ReviewConsumer {
 
     @RabbitListener(queues = "#{reviewDeletedQueue.name}", ackMode = "MANUAL")
     public void reviewDeleted(Long reviewId, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
-        
+
         log.info("Review received: " + reviewId);
         reviewService.deleteReview(reviewId);
         channel.basicAck(tag, false);
@@ -58,5 +63,15 @@ public class ReviewConsumer {
         log.info("Review deleted: " + reviewId);
     }
 
+    @RabbitListener(queues = "#{reviewCreatedForTemporaryVoteQueue.name}", ackMode = "MANUAL")
+    public void reviewCreatedForTemporaryVote(ReviewForTemporaryVoteMessage reviewForTemporaryVoteMessage, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
+
+        Long reviewId = reviewForTemporaryVoteMessage.getReviewId();
+        UUID temporaryVoteId = reviewForTemporaryVoteMessage.getTemporaryVoteId();
+
+        temporaryVoteService.toDefinitiveVote(temporaryVoteId, reviewId);
+        channel.basicAck(tag, false);
+
+    }
 
 }
