@@ -21,7 +21,7 @@ public class ReviewBootstrapper implements CommandLineRunner {
 
         Review review = new Review();
         review.setApprovalStatus("approved");
-        reviewService.create(review);
+        reviewService.save(review);
 
         log.info("Review created: " + review.getReviewId());
 

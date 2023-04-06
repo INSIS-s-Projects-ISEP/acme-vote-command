@@ -5,7 +5,8 @@ import com.isep.acme.domain.model.enumerate.VoteType;
 
 public interface VoteService {
 
-    Vote create(Vote vote);
+    Vote save(Vote vote);
+
     Vote updateVoteType(Vote vote, VoteType voteType);
     
     void deleteById(Long voteId);

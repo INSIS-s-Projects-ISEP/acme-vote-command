@@ -38,7 +38,7 @@ public class VoteConsumer {
         
         Vote vote = (Vote) messageConverter.fromMessage(message);
         log.info("Vote received: " + vote);
-        voteService.create(vote);
+        voteService.save(vote);
         channel.basicAck(tag, false);
         log.info("Vote created: " + vote);
     }

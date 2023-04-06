@@ -19,7 +19,7 @@ public class ReviewConsumer {
     @RabbitListener(queues = "#{reviewCreatedQueue.name}")
     public void reviewCreated(Review review){
         log.info("Review received: " + review);
-        reviewService.create(review);
+        reviewService.save(review);
         log.info("Review created: " + review);
     }
 

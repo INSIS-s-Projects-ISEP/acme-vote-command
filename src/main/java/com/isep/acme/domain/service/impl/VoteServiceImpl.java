@@ -16,7 +16,7 @@ public class VoteServiceImpl implements VoteService {
     private final VoteRepository voteRepository;
 
     @Override
-    public Vote create(Vote vote) {
+    public Vote save(Vote vote) {
         return voteRepository.save(vote);
     }
 
