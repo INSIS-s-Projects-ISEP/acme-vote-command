@@ -11,10 +11,10 @@ import com.isep.acme.dto.request.TemporaryVoteRequest;
 public class TemporaryVoteMapper {
     
     public TemporaryVote toEntity(TemporaryVoteRequest temporaryVoteRequest){
-        return new TemporaryVote(null,
-        temporaryVoteRequest.getUser(),
-        temporaryVoteRequest.getVoteType()
-        );
+        TemporaryVote temporaryVote = new TemporaryVote();
+        temporaryVote.setUser(temporaryVoteRequest.getUser());
+        temporaryVote.setVoteType(temporaryVoteRequest.getVoteType());
+        return temporaryVote;
     }
 
     public TemporaryVote toEntity(TemporaryVoteMessage temporaryVoteMessage){

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.isep.acme.domain.model.Review;
 import com.isep.acme.domain.model.Vote;
+import com.isep.acme.domain.repository.TemporaryVoteRepository;
 import com.isep.acme.domain.service.ReviewService;
 import com.isep.acme.domain.service.TemporaryVoteService;
 import com.isep.acme.dto.mapper.ReviewMapper;
@@ -29,6 +30,7 @@ public class ReviewConsumer {
     private final ReviewService reviewService;
     
     private final ReviewMapper reviewMapper;
+    private final TemporaryVoteRepository temporaryVoteRepository;
 
     private final TemporaryVoteProducer temporaryVoteProducer;
     private final VoteProducer voteProducer;
@@ -79,6 +81,9 @@ public class ReviewConsumer {
 
         channel.basicAck(tag, false);
         log.info("Definitive Vote created from Temporary Vote '" + temporaryVoteId + "'");
+
+        temporaryVoteRepository.deleteById(temporaryVoteId);
+        log.info("Temporary Vote deleted: " + temporaryVoteId);
 
     }
 

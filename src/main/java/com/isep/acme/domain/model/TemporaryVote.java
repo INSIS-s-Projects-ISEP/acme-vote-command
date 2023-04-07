@@ -19,7 +19,7 @@ import lombok.Setter;
 public class TemporaryVote {
     
     @Id
-    private UUID temporaryVoteId;
+    private UUID temporaryVoteId = UUID.randomUUID();
     private String user;
     private VoteType voteType;
 
