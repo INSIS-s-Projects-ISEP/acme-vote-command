@@ -9,6 +9,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
 import com.isep.acme.domain.model.Review;
+import com.isep.acme.domain.model.Vote;
 import com.isep.acme.domain.service.ReviewService;
 import com.isep.acme.domain.service.TemporaryVoteService;
 import com.isep.acme.dto.mapper.ReviewMapper;
@@ -28,6 +29,7 @@ public class ReviewConsumer {
     private final ReviewService reviewService;
     
     private final ReviewMapper reviewMapper;
+    private final TemporaryVoteProducer temporaryVoteProducer;
 
     @RabbitListener(queues = "#{reviewCreatedQueue.name}", ackMode = "MANUAL")
     public void reviewCreated(ReviewMessage reviewMessage, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
@@ -70,7 +72,10 @@ public class ReviewConsumer {
         UUID temporaryVoteId = reviewForTemporaryVoteMessage.getTemporaryVoteId();
 
         temporaryVoteService.toDefinitiveVote(temporaryVoteId, reviewId);
+        temporaryVoteProducer.definitiveVoteCreated(temporaryVoteId);
+
         channel.basicAck(tag, false);
+        log.info("Definitive Vote created from Temporary Vote '" + temporaryVoteId + "'");
 
     }
 

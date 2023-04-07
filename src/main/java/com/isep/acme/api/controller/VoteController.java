@@ -55,6 +55,7 @@ public class VoteController {
 
         temporaryVoteService.save(temporaryVote);
         temporaryVoteProducer.temporaryVoteCreated(temporaryVote, reviewRequest);
+        log.info("Temporary Vote created: " + temporaryVote.getTemporaryVoteId());
 
         return ResponseEntity.accepted().build();
     }
