@@ -75,15 +75,24 @@ public class ReviewConsumer {
         Long reviewId = reviewForTemporaryVoteMessage.getReviewId();
         UUID temporaryVoteId = reviewForTemporaryVoteMessage.getTemporaryVoteId();
 
-        Vote definitiveVote = temporaryVoteService.toDefinitiveVote(temporaryVoteId, reviewId);
-        voteProducer.voteCreated(definitiveVote);
-        temporaryVoteProducer.definitiveVoteCreated(temporaryVoteId);
+        try {
+            Vote definitiveVote = temporaryVoteService.toDefinitiveVote(temporaryVoteId, reviewId);
+            voteProducer.voteCreated(definitiveVote);
+            temporaryVoteProducer.definitiveVoteCreated(temporaryVoteId);
+    
+            channel.basicAck(tag, false);
+            log.info("Definitive Vote created from Temporary Vote '" + temporaryVoteId + "'");
+            
+            temporaryVoteRepository.deleteById(temporaryVoteId);
+            log.info("Temporary Vote deleted: " + temporaryVoteId);
+        } catch (Exception e) {
 
-        channel.basicAck(tag, false);
-        log.info("Definitive Vote created from Temporary Vote '" + temporaryVoteId + "'");
+            log.info("Review not found: " + reviewId);
+            channel.basicNack(tag, false, true);
 
-        temporaryVoteRepository.deleteById(temporaryVoteId);
-        log.info("Temporary Vote deleted: " + temporaryVoteId);
+        }
+
+
 
     }
 

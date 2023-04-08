@@ -172,7 +172,7 @@ public class RabbitmqConfig {
 
     @Bean
     public Queue reviewCreatedForTemporaryVoteQueue() {
-        return new Queue("review.review-created-for-temporary-vote.vote-command", true, false, true);
+        return new Queue("review.review-created-for-temporary-vote.vote-command", true, false, false);
     }
 
     @Bean
