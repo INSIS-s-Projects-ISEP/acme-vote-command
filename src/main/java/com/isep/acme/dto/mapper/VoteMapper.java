@@ -28,12 +28,13 @@ public class VoteMapper {
     public Vote toEntity(VoteRequest voteRequest){
         UUID reviewId = voteRequest.getReviewId();
         Optional<Review> optReview = reviewRepository.findById(reviewId);
+
+        Vote vote = new Vote();
+        vote.setReview(optReview.orElse(null));
+        vote.setVoteType(voteRequest.getVoteType());
+        vote.setUser(voteRequest.getUser());
         
-        return new Vote(null,
-            optReview.orElse(null),
-            voteRequest.getVoteType(),
-            voteRequest.getUser()
-        );
+        return vote;
     }
 
     public Vote toEntity(VoteMessage voteMessage){
