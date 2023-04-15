@@ -11,6 +11,6 @@ public interface TemporaryVoteService {
     
     void deleteById(UUID temporaryVoteId);
 
-    Vote toDefinitiveVote(UUID temporaryVoteId, Long reviewId);
+    Vote toDefinitiveVote(UUID temporaryVoteId, UUID reviewId);
 
 }

@@ -60,7 +60,7 @@ public class ReviewConsumer {
     }
 
     @RabbitListener(queues = "#{reviewDeletedQueue.name}", ackMode = "MANUAL")
-    public void reviewDeleted(Long reviewId, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
+    public void reviewDeleted(UUID reviewId, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
 
         log.info("Review received: " + reviewId);
         reviewService.deleteReview(reviewId);
@@ -72,7 +72,7 @@ public class ReviewConsumer {
     @RabbitListener(queues = "#{reviewCreatedForTemporaryVoteQueue.name}", ackMode = "MANUAL")
     public void reviewCreatedForTemporaryVote(ReviewForTemporaryVoteMessage reviewForTemporaryVoteMessage, Channel channel, @Header(AmqpHeaders.DELIVERY_TAG) long tag) throws IOException{
 
-        Long reviewId = reviewForTemporaryVoteMessage.getReviewId();
+        UUID reviewId = reviewForTemporaryVoteMessage.getReviewId();
         UUID temporaryVoteId = reviewForTemporaryVoteMessage.getTemporaryVoteId();
 
         try {

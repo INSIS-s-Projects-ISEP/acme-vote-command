@@ -2,6 +2,7 @@ package com.isep.acme.domain.model;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,7 +25,7 @@ import lombok.Setter;
 public class Review {
 
     @Id
-    private Long reviewId;
+    private UUID reviewId;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -33,7 +34,7 @@ public class Review {
     @OneToMany(mappedBy = "review")
     private Set<Vote> votes = new HashSet<>();
 
-    public Review(Long reviewId, ApprovalStatus approvalStatus) {
+    public Review(UUID reviewId, ApprovalStatus approvalStatus) {
         this.reviewId = reviewId;
         this.approvalStatus = approvalStatus;
     }

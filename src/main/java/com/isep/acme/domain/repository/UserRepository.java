@@ -12,10 +12,11 @@ import com.isep.acme.domain.model.User;
 import com.isep.acme.exception.ResourceNotFoundException;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @CacheConfig(cacheNames = "users")
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends CrudRepository<User, UUID> {
 
     @Override
     @Caching(evict = {
@@ -25,10 +26,10 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     @Override
     @Cacheable
-    Optional<User> findById(Long userId);
+    Optional<User> findById(UUID userId);
 
     @Cacheable
-    default User getById(final Long userId){
+    default User getById(UUID userId){
         final Optional<User> optionalUser = findById(userId);
 
         if(optionalUser.isEmpty()){

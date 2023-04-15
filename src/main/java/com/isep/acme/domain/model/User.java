@@ -17,7 +17,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue
-    private Long userId;
+    private UUID userId;
 
     @Column(unique = true)
     @Email

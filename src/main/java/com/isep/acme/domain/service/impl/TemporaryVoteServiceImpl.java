@@ -26,14 +26,14 @@ public class TemporaryVoteServiceImpl implements TemporaryVoteService {
     public TemporaryVote save(TemporaryVote temporaryVote) {
         return temporaryVoteRepository.save(temporaryVote);
     }
-    
+
     @Override
     public void deleteById(UUID temporaryVoteId) {
         temporaryVoteRepository.deleteById(temporaryVoteId);
     }
-        
+
     @Override
-    public Vote toDefinitiveVote(UUID temporaryVoteId, Long reviewId){
+    public Vote toDefinitiveVote(UUID temporaryVoteId, UUID reviewId){
 
         TemporaryVote temporaryVote = temporaryVoteRepository.findById(temporaryVoteId).orElseThrow();
         Review review = reviewRepository.findById(reviewId).orElseThrow();

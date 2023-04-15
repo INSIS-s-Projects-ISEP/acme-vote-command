@@ -1,5 +1,7 @@
 package com.isep.acme.domain.service.impl;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 import com.isep.acme.domain.model.Vote;
@@ -26,7 +28,7 @@ public class VoteServiceImpl implements VoteService {
         return voteRepository.save(vote);
     }
 
-    public void deleteById(Long voteId){
+    public void deleteById(UUID voteId){
         voteRepository.deleteById(voteId);
     }
     
