@@ -99,6 +99,12 @@ public class RabbitmqConfig {
     }
 
     @Bean
+    public Binding bindingvoteDeletedtovoteDeleted(FanoutExchange voteDeletedExchange,
+            Queue voteDeletedQueue) {
+        return BindingBuilder.bind(voteDeletedQueue).to(voteDeletedExchange);
+    }
+
+    @Bean
     public FanoutExchange reviewCreatedExchange() {
         return new FanoutExchange("review.review-created");
     }
@@ -196,6 +202,25 @@ public class RabbitmqConfig {
     public Binding bindingDefinitiveVoteCreatedToDefinitiveVoteCreated(FanoutExchange definitiveVoteCreatedExchange,
             Queue definitiveVoteCreatedQueue) {
         return BindingBuilder.bind(definitiveVoteCreatedQueue).to(definitiveVoteCreatedExchange);
+    }
+
+    // Bootstrapper
+    // Review
+    @Bean
+    public FanoutExchange rpcReviewExchange(){
+        return new FanoutExchange("rpc.review.vote-command-bootstrapper");
+    }
+    
+    // Vote
+    @Bean
+    public FanoutExchange rpcVoteExchange(){
+        return new FanoutExchange("rpc.vote.vote-command-bootstrapper");
+    }
+
+    // Temporary Vote
+    @Bean
+    public FanoutExchange rpcTemporaryVoteExchange(){
+        return new FanoutExchange("rpc.temporary-vote.vote-command-bootstrapper");
     }
 
 }
