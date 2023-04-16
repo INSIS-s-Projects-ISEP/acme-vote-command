@@ -16,6 +16,7 @@ import com.isep.acme.dto.mapper.VoteMapper;
 import com.isep.acme.dto.request.ReviewRequest;
 import com.isep.acme.dto.request.TemporaryVoteRequest;
 import com.isep.acme.dto.request.VoteRequest;
+import com.isep.acme.exception.ResourceNotFoundException;
 import com.isep.acme.messaging.TemporaryVoteProducer;
 import com.isep.acme.messaging.VoteProducer;
 
@@ -39,11 +40,16 @@ public class VoteController {
     
     @PostMapping
     public ResponseEntity<?> create(@RequestBody VoteRequest voteRequest){
-        Vote vote = voteMapper.toEntity(voteRequest);
-        reviewService.addVoteToReview(voteRequest.getReviewId(), vote);
-        voteProducer.voteCreated(vote);
-        log.info("Vote created: " + vote.getVoteId());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        try{
+            Vote vote = voteMapper.toEntity(voteRequest);
+            reviewService.addVoteToReview(voteRequest.getReviewId(), vote);
+            voteProducer.voteCreated(vote);
+            log.info("Vote created: " + vote.getVoteId());
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+        catch(ResourceNotFoundException | IllegalStateException e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("for-non-existing-review")

@@ -38,11 +38,10 @@ public class TemporaryVoteServiceImpl implements TemporaryVoteService {
         TemporaryVote temporaryVote = temporaryVoteRepository.findById(temporaryVoteId).orElseThrow();
         Review review = reviewRepository.findById(reviewId).orElseThrow();
 
-        Vote vote = new Vote(null,
-            review,
-            temporaryVote.getVoteType(),
-            temporaryVote.getUser()
-        );
+        Vote vote = new Vote();
+        vote.setReview(review);
+        vote.setVoteType(temporaryVote.getVoteType());
+        vote.setUser(temporaryVote.getUser());
 
         return voteService.save(vote);
     }

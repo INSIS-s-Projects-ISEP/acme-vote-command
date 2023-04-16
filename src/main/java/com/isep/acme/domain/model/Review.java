@@ -41,7 +41,7 @@ public class Review {
 
     public void addVote(Vote vote){
         if(!approvalStatus.equals(ApprovalStatus.APPROVED)){
-            throw new RuntimeException("Review is not approved");
+            throw new IllegalStateException("Review is not approved");
         }
         votes.add(vote);
     }
